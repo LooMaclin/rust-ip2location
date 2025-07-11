@@ -46,7 +46,12 @@ impl Source {
     }
 
     pub fn read_u8(&self, offset: u64) -> Result<u8, Error> {
-        Ok(self.map[(offset - 1) as usize])
+        let real_offset = offset as usize - 1;
+        if real_offset < self.map.len() {
+            Ok(self.map[real_offset])
+        } else {
+            Err(Error::GenericError(format!("Source::read_u8 bad offset {}, when map len is {}", real_offset, self.map.len())))
+        }
     }
 
     pub fn read_u32(&self, offset: u64) -> Result<u32, Error> {
